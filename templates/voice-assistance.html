@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistance - Krishi Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/i18n-styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/Logo.png') }}" type="image/x-icon">
+    <style>
+        .voice-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .voice-section {
+            background: var(--white);
+            border: var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .mic-button {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 48px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(45, 122, 62, 0.2);
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(45, 122, 62, 0.3);
+        }
+
+        .mic-button.recording {
+            background: #d32f2f;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(211, 47, 47, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(211, 47, 47, 0);
+            }
+        }
+
+        .status-text {
+            font-size: 16px;
+            color: var(--text-gray);
+            margin-top: 16px;
+            height: 24px;
+        }
+
+        .status-text.recording {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .status-text.processing {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .transcript-box {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 60px;
+            text-align: left;
+        }
+
+        .transcript-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .transcript-text {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .response-box {
+            background: #e8f5e9;
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .response-label {
+            font-size: 12px;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .response-text {
+            font-size: 15px;
+            color: #1b5e20;
+            line-height: 1.6;
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .feature-item {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .feature-emoji {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--bg-light);
+        }
+
+        .btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn.primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <button class="toggle-sidebar-btn" id="sidebarToggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="logo-small">
+                    <img src="/static/assets/Logo.png" alt="Krishi Officer Logo">
+                    <span data-i18n="common.appName">Krishi Officer</span>
+                </div>
+            </div>
+            <nav class="nav"><a href="#Language" data-i18n="header.language">Language</a></nav>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="/" class="nav-item"><span class="nav-icon">📊</span> <span class="nav-text" data-i18n="navigation.dashboard">Dashboard</span></a></li>
+            <li><a href="/crop-advisory" class="nav-item"><span class="nav-icon">🌾</span> <span class="nav-text" data-i18n="navigation.cropAdvisory">Crop Advisory</span></a></li>
+            <li><a href="/soil-health" class="nav-item"><span class="nav-icon">🧪</span> <span class="nav-text" data-i18n="navigation.soilHealth">Soil Health</span></a></li>
+            <li><a href="/pest-detection" class="nav-item"><span class="nav-icon">🪲</span> <span class="nav-text" data-i18n="navigation.pestDetection">Pest Detection</span></a></li>
+            <li><a href="/weather" class="nav-item"><span class="nav-icon">🌦</span> <span class="nav-text" data-i18n="navigation.weather">Weather</span></a></li>
+            <li><a href="/market-prices" class="nav-item"><span class="nav-icon">📈</span> <span class="nav-text" data-i18n="navigation.marketPrices">Market Prices</span></a></li>
+            <li><a href="/voice-assistance" class="nav-item active"><span class="nav-icon">🎙</span> <span class="nav-text" data-i18n="navigation.voiceAssistance">Voice Assistance</span></a></li>
+            <li><a href="/faq" class="nav-item"><span class="nav-icon">❓</span> <span class="nav-text" data-i18n="navigation.faq">FAQ</span></a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="main-content">
+            <div class="voice-container">
+                <h1 style="margin-bottom: 12px; text-align: center;" data-i18n="voiceAssistance.title">🎙️ Voice Assistance</h1>
+                <p style="text-align: center; color: var(--text-gray); margin-bottom: 32px;" data-i18n="voiceAssistance.description">Speak to get instant help with your farming queries</p>
+
+                <!-- Voice Input Section -->
+                <div class="voice-section">
+                    <h3 style="margin-bottom: 16px;" data-i18n="voiceAssistance.talkToKrishi">Talk to Krishi AI</h3>
+                    <button class="mic-button" id="micButton" data-i18n-title="voiceAssistance.startListening" title="Click to start recording">🎤</button>
+                    <div class="status-text" id="statusText" data-i18n="voiceAssistance.clickMic">Click mic to start</div>
+
+                    <div class="transcript-box" style="display: none;" id="transcriptBox">
+                        <div class="transcript-label" data-i18n="voiceAssistance.yourMessage">Your Message</div>
+                        <div class="transcript-text" id="transcriptText"></div>
+                    </div>
+
+                    <div class="response-box" style="display: none;" id="responseBox">
+                        <div class="response-label" data-i18n="voiceAssistance.aiResponse">Krishi AI Response</div>
+                        <div class="response-text" id="responseText"></div>
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="btn" id="clearBtn" data-i18n="buttons.clear">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <h3 style="margin-bottom: 16px;" data-i18n="voiceAssistance.whatCanYouAsk">What You Can Ask</h3>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-emoji">🌾</div>
+                        <div class="feature-title" data-i18n="voiceAssistance.features.cropAdvice.title">Crop Advice</div>
+                        <div class="feature-desc" data-i18n="voiceAssistance.features.cropAdvice.desc">"Tell me about wheat farming"</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-emoji">🪲</div>
+                        <div class="feature-title" data-i18n="voiceAssistance.features.pestControl.title">Pest Control</div>
+                        <div class="feature-desc" data-i18n="voiceAssistance.features.pestControl.desc">"How to prevent armyworms?"</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-emoji">💧</div>
+                        <div class="feature-title" data-i18n="voiceAssistance.features.irrigation.title">Irrigation</div>
+                        <div class="feature-desc" data-i18n="voiceAssistance.features.irrigation.desc">"When to irrigate maize?"</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-emoji">🧪</div>
+                        <div class="feature-title" data-i18n="voiceAssistance.features.soilHealth.title">Soil Health</div>
+                        <div class="feature-desc" data-i18n="voiceAssistance.features.soilHealth.desc">"Test my soil nutrients"</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-emoji">🌦</div>
+                        <div class="feature-title" data-i18n="voiceAssistance.features.weather.title">Weather</div>
+                        <div class="feature-desc" data-i18n="voiceAssistance.features.weather.desc">"Rain forecast for today?"</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-emoji">📈</div>
+                        <div class="feature-title" data-i18n="voiceAssistance.features.marketInfo.title">Market Info</div>
+                        <div class="feature-desc" data-i18n="voiceAssistance.features.marketInfo.desc">"Wheat prices today?"</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/i18n-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/language-switcher.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script>
+        // Helper to translate safely
+        const t = (key, defaultText) => {
+            if (window.KrishiI18n && window.KrishiI18n.t) {
+                return window.KrishiI18n.t(key);
+            }
+            return defaultText;
+        };
+
+        // Elements
+        const micButton = document.getElementById('micButton');
+        const statusText = document.getElementById('statusText');
+        const transcriptBox = document.getElementById('transcriptBox');
+        const transcriptText = document.getElementById('transcriptText');
+        const responseBox = document.getElementById('responseBox');
+        const responseText = document.getElementById('responseText');
+        const clearBtn = document.getElementById('clearBtn');
+
+        // Recording state
+        let mediaStream = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Utility: update status text and classes
+        function setStatus(message, { recording=false, processing=false } = {}){
+            statusText.textContent = message;
+            statusText.classList.toggle('recording', recording);
+            statusText.classList.toggle('processing', processing);
+        }
+
+        function showTranscript(text){
+            transcriptText.textContent = text || '';
+            transcriptBox.style.display = text ? 'block' : 'none';
+        }
+
+        function showResponse(text){
+            responseText.textContent = text || '';
+            responseBox.style.display = text ? 'block' : 'none';
+        }
+
+        // Check feature support and secure context
+        function isSecureContextAllowed(){
+            const host = window.location.hostname;
+            // HTTPS is always secure
+            if (location.protocol === 'https:') return true;
+            // Localhost/loopback is secure
+            if (host === 'localhost' || host === '127.0.0.1' || host === '::1') return true;
+            // Allow all private/local IPs for development
+            if (!host.includes('.') || host.startsWith('10.') || host.startsWith('192.168.') || host.startsWith('172.')) return true;
+            return false;
+        }
+
+        async function checkMicrophonePermission(){
+            // Check if browser supports mediaDevices API
+            if (!navigator.mediaDevices) {
+                setStatus(t('voiceAssistance.errors.browserNotSupported', 'Browser does not support mediaDevices'), {});
+                return false;
+            }
+
+            if (!navigator.mediaDevices.getUserMedia) {
+                setStatus(t('voiceAssistance.errors.getUserMediaNotSupported', 'Browser does not support getUserMedia'), {});
+                return false;
+            }
+
+            // Check secure context
+            if (!isSecureContextAllowed()){
+                setStatus(t('voiceAssistance.errors.secureContextRequired', 'Requires HTTPS or localhost'), {});
+                return false;
+            }
+
+            return true;
+        }
+
+        // Start recording: request user media and create MediaRecorder
+        async function startRecording(){
+            try{
+                const ok = await checkMicrophonePermission();
+                if (!ok) return;
+
+                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Choose mimeType with broad support
+                let options = {};
+                if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')){
+                    options.mimeType = 'audio/webm;codecs=opus';
+                } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')){
+                    options.mimeType = 'audio/ogg;codecs=opus';
+                }
+
+                audioChunks = [];
+                mediaRecorder = new MediaRecorder(mediaStream, options);
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data && e.data.size > 0) audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstart = () => {
+                    isRecording = true;
+                    micButton.classList.add('recording');
+                    setStatus(t('voiceAssistance.status.recording', 'Recording...'), { recording: true });
+                    showTranscript('');
+                    showResponse('');
+                };
+
+                mediaRecorder.onstop = async () => {
+                    isRecording = false;
+                    micButton.classList.remove('recording');
+                    setStatus(t('voiceAssistance.status.processing', 'Processing...'), { processing: true });
+
+                    const blob = new Blob(audioChunks, { type: audioChunks[0]?.type || 'audio/webm' });
+                    // send to backend
+                    try{
+                        const form = new FormData();
+                        const filename = `recording_${Date.now()}.webm`;
+                        form.append('audio', blob, filename);
+
+                        const resp = await fetch('/upload-audio', { method: 'POST', body: form });
+                        if (!resp.ok) throw new Error('Server error: ' + resp.status);
+                        const json = await resp.json();
+                        setStatus(t('voiceAssistance.status.done', 'Done'));
+                        showResponse(json.message || JSON.stringify(json));
+                        if (json.transcript) showTranscript(json.transcript);
+                    } catch (err){
+                        console.error(err);
+                        setStatus(t('voiceAssistance.status.error', 'Error: ') + (err.message || err), {});
+                    } finally {
+                        // clean up stream tracks
+                        if (mediaStream){
+                            mediaStream.getTracks().forEach(t => t.stop());
+                            mediaStream = null;
+                        }
+                        setTimeout(()=> statusText.classList.remove('processing'), 1000);
+                    }
+                };
+
+                mediaRecorder.onerror = (ev) => {
+                    console.error('MediaRecorder error', ev);
+                    setStatus(t('voiceAssistance.status.recordingError', 'Recording error'), {});
+                };
+
+                mediaRecorder.start();
+
+            } catch (err){
+                console.error(err);
+                // Handle specific permission/errors
+                if (err.name === 'NotAllowedError' || err.name === 'SecurityError'){
+                    setStatus(t('voiceAssistance.errors.permissionDenied', 'Permission denied'), {});
+                } else if (err.name === 'NotFoundError'){
+                    setStatus(t('voiceAssistance.errors.noMicFound', 'No microphone found'), {});
+                } else if (err.name === 'NotReadableError'){
+                    setStatus(t('voiceAssistance.errors.micNotReadable', 'Microphone not readable'), {});
+                } else {
+                    setStatus(t('voiceAssistance.status.error', 'Error: ') + (err.message || err), {});
+                }
+                if (mediaStream){
+                    mediaStream.getTracks().forEach(t => t.stop());
+                    mediaStream = null;
+                }
+            }
+        }
+
+        // Stop recording
+        function stopRecording(){
+            try{
+                if (mediaRecorder && mediaRecorder.state !== 'inactive'){
+                    mediaRecorder.stop();
+                }
+            } catch (err){
+                console.error('Stop recording error', err);
+                setStatus(t('voiceAssistance.errors.stopRecordingError', 'Error stopping recording'), {});
+            }
+        }
+
+        micButton.addEventListener('click', async () => {
+            if (!isRecording){
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            showTranscript('');
+            showResponse('');
+            setStatus(t('voiceAssistance.status.clickMic', 'Click mic to start'));
+        });
+    </script>
+</body>
+
+</html>

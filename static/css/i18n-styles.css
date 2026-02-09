@@ -1,0 +1,259 @@
+/**
+ * Multilingual & RTL Support CSS
+ * Handles language selection UI, RTL layouts, and language switching
+ */
+
+/* ============================================
+   LANGUAGE SELECTION PAGE STYLES
+   ============================================ */
+
+.language-selection-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease-in;
+  font-family: 'Inter', sans-serif;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.language-selection-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.language-selection-content {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header Section */
+.language-selection-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.language-selection-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 10px 0;
+}
+
+.language-selection-subtitle {
+  font-size: 1rem;
+  color: #718096;
+  margin: 0;
+}
+
+/* Language Grid */
+.language-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f7fafc;
+}
+
+/* Language Option Button */
+.language-option {
+  padding: 20px 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.language-option:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.language-option.selected {
+  border-color: #667eea;
+  background: #ebf4ff;
+  color: #5a67d8;
+}
+
+.lang-native {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.language-option.selected .lang-native {
+  color: #5a67d8;
+}
+
+.lang-english {
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+/* Continue Button */
+.language-selection-footer {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.continue-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+}
+
+.continue-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
+}
+
+.continue-btn:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Scrollbar Styling */
+.language-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.language-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.language-grid::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.language-grid::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* ============================================
+   RTL SUPPORT
+   ============================================ */
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .sidebar {
+  left: auto;
+  right: 0;
+  border-right: none;
+  border-left: var(--border);
+}
+
+[dir="rtl"] .main-wrapper {
+  margin-left: 0;
+  margin-right: var(--sidebar-width);
+  transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[dir="rtl"] .sidebar.collapsed + .main-wrapper {
+  margin-left: 0;
+  margin-right: var(--sidebar-collapsed-width);
+}
+
+/* Navigation items */
+[dir="rtl"] .nav-item {
+  text-align: right;
+}
+
+/* Icons rotation for RTL */
+[dir="rtl"] .fa-chevron-right,
+[dir="rtl"] .fa-arrow-right,
+[dir="rtl"] .bx-chevron-right {
+  transform: rotate(180deg);
+}
+
+[dir="rtl"] .fa-chevron-left,
+[dir="rtl"] .fa-arrow-left,
+[dir="rtl"] .bx-chevron-left {
+  transform: rotate(180deg);
+}
+
+/* Specific component fixes */
+[dir="rtl"] .weather-card,
+[dir="rtl"] .feature-card,
+[dir="rtl"] .market-card {
+  text-align: right;
+}
+
+[dir="rtl"] .market-table th,
+[dir="rtl"] .market-table td {
+  text-align: right;
+}
+
+/* Form elements */
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+/* Accordion markers */
+[dir="rtl"] .accordion-button::after {
+  margin-left: 0;
+  margin-right: auto;
+}

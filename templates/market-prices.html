@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="marketPrices.title">Market Prices - Krishi Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/i18n-styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/Logo.png') }}" type="image/x-icon">
+    <style>
+        .price-search {
+            margin-bottom: 28px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .price-table {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            border: var(--border);
+            margin-bottom: 28px;
+        }
+
+        .table-header {
+            background: var(--bg-light);
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: var(--text-gray);
+            border-bottom: var(--border);
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: var(--border);
+            align-items: center;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background: var(--bg-light);
+        }
+
+        .crop-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .price-cell {
+            font-size: 14px;
+        }
+
+        .price-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .change-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .change-up {
+            background: #e6fcf5;
+            color: #087f5b;
+        }
+
+        .change-down {
+            background: #ffe0e0;
+            color: #c41e3a;
+        }
+
+        .mandi-section {
+            margin-bottom: 28px;
+        }
+
+        .mandi-title {
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .price-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .price-card {
+            background: var(--white);
+            border: var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .card-crop {
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .card-mandi {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+        }
+
+        .card-price-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .card-price-label {
+            font-size: 11px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+        }
+
+        .card-price {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        .update-time {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: var(--border);
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-tag {
+            background: var(--bg-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            border: var(--border);
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover,
+        .filter-tag.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <button class="toggle-sidebar-btn" id="sidebarToggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="logo-small">
+                    <img src="/static/assets/Logo.png" alt="Krishi Officer Logo">
+                    <span data-i18n="common.appName">Krishi Officer</span>
+                </div>
+            </div>
+            <nav class="nav"></nav>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="/" class="nav-item"><span class="nav-icon">📊</span> <span class="nav-text" data-i18n="navigation.dashboard">Dashboard</span></a></li>
+            <li><a href="/crop-advisory" class="nav-item"><span class="nav-icon">🌾</span> <span class="nav-text" data-i18n="navigation.cropAdvisory">Crop Advisory</span></a></li>
+            <li><a href="/soil-health" class="nav-item"><span class="nav-icon">🧪</span> <span class="nav-text" data-i18n="navigation.soilHealth">Soil Health</span></a></li>
+            <li><a href="/pest-detection" class="nav-item"><span class="nav-icon">🪲</span> <span class="nav-text" data-i18n="navigation.pestDetection">Pest Detection</span></a></li>
+            <li><a href="/weather" class="nav-item"><span class="nav-icon">🌦</span> <span class="nav-text" data-i18n="navigation.weather">Weather</span></a></li>
+            <li><a href="/market-prices" class="nav-item active"><span class="nav-icon">📈</span> <span class="nav-text" data-i18n="navigation.marketPrices">Market Prices</span></a></li>
+            <li><a href="/voice-assistance" class="nav-item"><span class="nav-icon">🎙</span> <span class="nav-text" data-i18n="navigation.voiceAssistance">Voice Assistance</span></a></li>
+            <li><a href="/faq" class="nav-item"><span class="nav-icon">❓</span> <span class="nav-text" data-i18n="navigation.faq">FAQ</span></a></li>
+        </ul>
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=Guest+Farmer&background=random" alt="User" class="avatar">
+            <div class="user-info">
+                <p data-i18n="dashboard.guest">Guest Farmer</p>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="main-content">
+            <h1 style="margin-bottom: 24px;" data-i18n="marketPrices.pageTitle">📈 Market Prices & Rates</h1>
+
+            <div class="price-search">
+                <input type="text" class="search-input" data-i18n="marketPrices.searchPlaceholder" data-i18n-type="placeholder" placeholder="Search crop name...">
+                <button style="padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" data-i18n="marketPrices.searchBtn">Search</button>
+            </div>
+
+            <div class="filter-tags">
+                <span class="filter-tag active" data-i18n="marketPrices.filters.all">All Crops</span>
+                <span class="filter-tag" data-i18n="marketPrices.filters.grains">Grains</span>
+                <span class="filter-tag" data-i18n="marketPrices.filters.vegetables">Vegetables</span>
+                <span class="filter-tag" data-i18n="marketPrices.filters.pulses">Pulses</span>
+                <span class="filter-tag" data-i18n="marketPrices.filters.cashCrops">Cash Crops</span>
+            </div>
+
+            <!-- Overall Market Rates -->
+            <h3 class="mandi-title" data-i18n="marketPrices.ratesTitle">Today's Market Rates (All India)</h3>
+
+            <div class="price-table">
+                <div class="table-header">
+                    <span data-i18n="marketPrices.table.crop">Crop</span>
+                    <span data-i18n="marketPrices.table.minPrice">Min Price</span>
+                    <span data-i18n="marketPrices.table.maxPrice">Max Price</span>
+                    <span data-i18n="marketPrices.table.avgPrice">Avg Price</span>
+                    <span data-i18n="marketPrices.table.change">Change</span>
+                </div>
+
+                <div class="table-row">
+                    <span class="crop-name">🌾 <span data-i18n="crops.wheat">Wheat</span></span>
+                    <span class="price-cell">₹<span class="price-value">2,100</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">2,180</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">2,140</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="change-badge change-up">↑ 2.1%</span>
+                </div>
+
+                <div class="table-row">
+                    <span class="crop-name">🍚 <span data-i18n="crops.rice">Rice</span></span>
+                    <span class="price-cell">₹<span class="price-value">2,850</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">2,920</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">2,875</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="change-badge change-up">↑ 1.5%</span>
+                </div>
+
+                <div class="table-row">
+                    <span class="crop-name">🌽 <span data-i18n="crops.maize">Maize</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,850</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,920</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,885</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="change-badge change-down">↓ 0.8%</span>
+                </div>
+
+                <div class="table-row">
+                    <span class="crop-name">🫘 <span data-i18n="crops.soybean">Soybean</span></span>
+                    <span class="price-cell">₹<span class="price-value">4,200</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">4,320</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">4,250</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="change-badge change-up">↑ 3.2%</span>
+                </div>
+
+                <div class="table-row">
+                    <span class="crop-name">🥔 <span data-i18n="crops.potato">Potato</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,150</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,250</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,195</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="change-badge change-down">↓ 2.1%</span>
+                </div>
+
+                <div class="table-row">
+                    <span class="crop-name">🧅 <span data-i18n="crops.onion">Onion</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,800</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,900</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="price-cell">₹<span class="price-value">1,850</span><span data-i18n="marketPrices.perQuintal">/quintal</span></span>
+                    <span class="change-badge change-up">↑ 1.8%</span>
+                </div>
+            </div>
+
+            <!-- Popular Mandis -->
+            <div class="mandi-section">
+                <h3 class="mandi-title" data-i18n="marketPrices.popularMandisTitle">Popular Mandis - Wheat Prices</h3>
+                <div class="price-cards">
+                    <div class="price-card">
+                        <div class="card-crop" data-i18n="crops.wheat">Wheat</div>
+                        <div class="card-mandi">📍 <span data-i18n="marketPrices.mandis.delhi">Delhi Mandi</span></div>
+                        <div class="card-price-row">
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.min">Min</div>
+                                <div class="card-price">₹2,100</div>
+                            </div>
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.max">Max</div>
+                                <div class="card-price">₹2,150</div>
+                            </div>
+                        </div>
+                        <div class="update-time" data-i18n="marketPrices.updatedAgo">Updated 2 hours ago</div>
+                    </div>
+
+                    <div class="price-card">
+                        <div class="card-crop" data-i18n="crops.wheat">Wheat</div>
+                        <div class="card-mandi">📍 <span data-i18n="marketPrices.mandis.mumbai">Mumbai Mandi</span></div>
+                        <div class="card-price-row">
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.min">Min</div>
+                                <div class="card-price">₹2,120</div>
+                            </div>
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.max">Max</div>
+                                <div class="card-price">₹2,180</div>
+                            </div>
+                        </div>
+                        <div class="update-time" data-i18n="marketPrices.updatedAgo">Updated 2 hours ago</div>
+                    </div>
+
+                    <div class="price-card">
+                        <div class="card-crop" data-i18n="crops.wheat">Wheat</div>
+                        <div class="card-mandi">📍 <span data-i18n="marketPrices.mandis.indore">Indore Mandi</span></div>
+                        <div class="card-price-row">
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.min">Min</div>
+                                <div class="card-price">₹2,110</div>
+                            </div>
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.max">Max</div>
+                                <div class="card-price">₹2,160</div>
+                            </div>
+                        </div>
+                        <div class="update-time" data-i18n="marketPrices.updated1HourAgo">Updated 1 hour ago</div>
+                    </div>
+
+                    <div class="price-card">
+                        <div class="card-crop" data-i18n="crops.wheat">Wheat</div>
+                        <div class="card-mandi">📍 <span data-i18n="marketPrices.mandis.chandigarh">Chandigarh Mandi</span></div>
+                        <div class="card-price-row">
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.min">Min</div>
+                                <div class="card-price">₹2,105</div>
+                            </div>
+                            <div>
+                                <div class="card-price-label" data-i18n="marketPrices.table.max">Max</div>
+                                <div class="card-price">₹2,155</div>
+                            </div>
+                        </div>
+                        <div class="update-time" data-i18n="marketPrices.updated1HourAgo">Updated 1 hour ago</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/i18n-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/language-switcher.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    
+    <script>
+        // Helper to translate safely
+        const t = (key, defaultText) => {
+            if (window.KrishiI18n && window.KrishiI18n.t) {
+                return window.KrishiI18n.t(key);
+            }
+            return defaultText;
+        };
+
+        // Filter functionality (visual only)
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="soilHealth.pageTitle">Soil Health Analysis - Krishi Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/crop-advisory.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/i18n-styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/Logo.png') }}" type="image/x-icon">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <button class="toggle-sidebar-btn" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="logo-small">
+                    <img src="/static/assets/Logo.png" alt="Krishi Officer Logo">
+                    <span data-i18n="common.appName">Krishi Officer</span>
+                </div>
+            </div>
+            <nav class="nav"></nav>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="/" class="nav-item"><span class="nav-icon">📊</span> <span class="nav-text" data-i18n="navigation.dashboard">Dashboard</span></a></li>
+            <li><a href="/crop-advisory" class="nav-item"><span class="nav-icon">🌾</span> <span class="nav-text" data-i18n="navigation.cropAdvisory">Crop Advisory</span></a></li>
+            <li><a href="/soil-health" class="nav-item active"><span class="nav-icon">🧪</span> <span class="nav-text" data-i18n="navigation.soilHealth">Soil Health</span></a></li>
+            <li><a href="/pest-detection" class="nav-item"><span class="nav-icon">🪲</span> <span class="nav-text" data-i18n="navigation.pestDetection">Pest Detection</span></a></li>
+            <li><a href="/weather" class="nav-item"><span class="nav-icon">🌦</span> <span class="nav-text" data-i18n="navigation.weather">Weather</span></a></li>
+            <li><a href="/market-prices" class="nav-item"><span class="nav-icon">📈</span> <span class="nav-text" data-i18n="navigation.marketPrices">Market Prices</span></a></li>
+            <li><a href="/voice-assistance" class="nav-item"><span class="nav-icon">🎙</span> <span class="nav-text" data-i18n="navigation.voiceAssistance">Voice Assistance</span></a></li>
+            <li><a href="/faq" class="nav-item"><span class="nav-icon">❓</span> <span class="nav-text" data-i18n="navigation.faq">FAQ</span></a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="main-content">
+            <header class="page-header">
+                <h1 data-i18n="soilHealth.pageTitle">🧪 Soil Health Analysis</h1>
+                <p class="subtitle" data-i18n="soilHealth.subtitle">Upload a soil sample image for AI analysis</p>
+            </header>
+
+            <div class="chat-container">
+                <div class="ai-response-area">
+                    <div class="panel-card" id="resultsPanel">
+                        <div class="results-placeholder" id="resultsPlaceholder">
+                            <div class="placeholder-icon">🌱</div>
+                            <p data-i18n="soilHealth.resultsPlaceholder">Your soil analysis will appear here after you upload an image.</p>
+                        </div>
+                        <div class="results-content" id="resultsContent" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <div class="input-container">
+                        <div class="image-preview-bubble" id="imagePreview" style="display: none;">
+                            <img id="previewImg" src="" alt="Preview">
+                            <button class="remove-btn" id="removeImage">✕</button>
+                        </div>
+
+                        <div class="input-bar">
+                            <input type="file" id="imageInput" accept="image/*" hidden>
+                            <button class="plus-btn" id="plusBtn" type="button" title="Add Image">+</button>
+
+                            <textarea id="textInput" class="chat-textarea"
+                                data-i18n="soilHealth.inputPlaceholder" data-i18n-type="placeholder"
+                                placeholder="Describe the soil condition (e.g., color, texture, moisture)..." rows="1"></textarea>
+
+                            <button class="send-btn" id="analyzeBtn">
+                                <span>➤</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/i18n-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/language-switcher.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const plusBtn = document.getElementById('plusBtn')
+            const imageInput = document.getElementById('imageInput')
+            const imagePreview = document.getElementById('imagePreview')
+            const previewImg = document.getElementById('previewImg')
+            const removeImageBtn = document.getElementById('removeImage')
+            const textInput = document.getElementById('textInput')
+            const analyzeBtn = document.getElementById('analyzeBtn')
+            const resultsPlaceholder = document.getElementById('resultsPlaceholder')
+            const resultsContent = document.getElementById('resultsContent')
+
+            let selectedFile = null
+
+            // Helper to translate safely
+            const t = (key, defaultText) => {
+                if (window.KrishiI18n && window.KrishiI18n.t) {
+                    return window.KrishiI18n.t(key);
+                }
+                return defaultText;
+            };
+
+            plusBtn.addEventListener('click', () => {
+                imageInput.click()
+            })
+
+            imageInput.addEventListener('change', e => {
+                const file = e.target.files[0]
+                if (file && file.type.startsWith('image/')) {
+                    selectedFile = file
+                    const reader = new FileReader()
+
+                    reader.onload = event => {
+                        previewImg.src = event.target.result
+                        imagePreview.style.display = 'block'
+                    }
+
+                    reader.readAsDataURL(file)
+                }
+            })
+
+            removeImageBtn.addEventListener('click', e => {
+                e.preventDefault()
+                selectedFile = null
+                imageInput.value = ''
+                imagePreview.style.display = 'none'
+                previewImg.src = ''
+            })
+
+            textInput.addEventListener('input', function () {
+                this.style.height = 'auto'
+                const newHeight = Math.min(this.scrollHeight, 150)
+                this.style.height = newHeight + 'px'
+                this.style.overflowY = this.scrollHeight > 150 ? 'auto' : 'hidden'
+            })
+
+            analyzeBtn.addEventListener('click', async () => {
+                const queryText = textInput.value.trim()
+
+                if (!selectedFile && !queryText) {
+                    alert(t('soilHealth.alertNoInput', 'Please provide an image or a description.'))
+                    return
+                }
+
+                analyzeBtn.disabled = true
+                analyzeBtn.style.opacity = '0.7'
+                analyzeBtn.innerHTML = '<span>⏳</span>'
+                
+                const analyzingText = t('soilHealth.analyzing', 'Krishi AI is analyzing your soil...');
+                const subtext = t('soilHealth.analyzingSubtext', 'This may take a moment');
+                
+                resultsPlaceholder.innerHTML = `
+                    <div class="placeholder-icon">⏳</div>
+                    <p>${analyzingText}</p>
+                    <small style="color: #888;">${subtext}</small>
+                `
+
+                const formData = new FormData()
+                formData.append('query', queryText || 'Analyze this soil image for health assessment.')
+                
+                // Add language for localized response
+                if (window.KrishiI18n) {
+                    formData.append('language', KrishiI18n.getCurrentLanguage())
+                }
+
+                if (selectedFile) {
+                    formData.append('soil_image', selectedFile)
+                }
+
+                try {
+                    const response = await fetch('/analyze-soil', {
+                        method: 'POST',
+                        body: formData
+                    })
+
+                    const data = await response.json()
+
+                    if (data.advice) {
+                        showResults(data.advice)
+                    } else {
+                        throw new Error(data.error || 'Analysis failed')
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error)
+                    const errorText = t('common.error', 'Error');
+                    const tryAgainText = t('soilHealth.tryAgain', 'Try Again');
+                    
+                    resultsPlaceholder.innerHTML = `
+                        <div class="placeholder-icon">⚠️</div>
+                        <p>${errorText}: ${error.message}</p>
+                        <button onclick="location.reload()" style="margin-top: 15px; padding: 8px 16px; border-radius: 8px; border: 1px solid #ccc; cursor: pointer;">${tryAgainText}</button>
+                    `
+                } finally {
+                    analyzeBtn.disabled = false
+                    analyzeBtn.style.opacity = '1'
+                    analyzeBtn.innerHTML = '<span>➤</span>'
+                }
+            })
+
+            function showResults(advice) {
+                resultsPlaceholder.style.display = 'none'
+                resultsContent.style.display = 'block'
+
+                let formattedAdvice = advice
+                // Formatting logic could go here if needed
+                
+                resultsContent.innerHTML = formattedAdvice;
+            }
+        })
+    </script>
+</body>
+
+</html>

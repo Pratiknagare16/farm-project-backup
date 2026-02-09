@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="common.appNameFull">Dashboard - Krishi Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/i18n-styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/Logo.png') }}" type="image/x-icon">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <button class="toggle-sidebar-btn" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div class="logo-small">
+                    <img src="/static/assets/Logo.png" alt="Krishi Officer Logo">
+                    <span data-i18n="common.appName">Krishi Officer</span>
+                </div>
+            </div>
+            <nav class="nav"></nav>
+        </div>
+    </header>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        
+        <ul class="nav-links">
+            <li><a href="/" class="nav-item active"><span class="nav-icon">📊</span> <span class="nav-text" data-i18n="navigation.dashboard">Dashboard</span></a></li>
+            <li><a href="/crop-advisory" class="nav-item"><span class="nav-icon">🌾</span> <span class="nav-text" data-i18n="navigation.cropAdvisory">Crop Advisory</span></a></li>
+            <li><a href="/soil-health" class="nav-item"><span class="nav-icon">🧪</span> <span class="nav-text" data-i18n="navigation.soilHealth">Soil Health</span></a></li>
+            <li><a href="/pest-detection" class="nav-item"><span class="nav-icon">🪲</span> <span class="nav-text" data-i18n="navigation.pestDetection">Pest Detection</span></a></li>
+            <li><a href="/weather" class="nav-item"><span class="nav-icon">🌦</span> <span class="nav-text" data-i18n="navigation.weather">Weather</span></a></li>
+            <li><a href="/market-prices" class="nav-item"><span class="nav-icon">📈</span> <span class="nav-text" data-i18n="navigation.marketPrices">Market Prices</span></a></li>
+            <li><a href="/voice-assistance" class="nav-item"><span class="nav-icon">🎙</span> <span class="nav-text" data-i18n="navigation.voiceAssistance">Voice Assistance</span></a></li>
+            <li><a href="/faq" class="nav-item"><span class="nav-icon">❓</span> <span class="nav-text" data-i18n="navigation.faq">FAQ</span></a></li>
+        </ul>
+
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=Guest+Farmer&background=random" alt="User" class="avatar">
+            <div class="user-info">
+                <p data-i18n="dashboard.guest">Guest Farmer</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1 data-i18n="dashboard.welcome">Welcome, Guest Farmer</h1>
+                <span data-i18n="dashboard.farmStatus">Here's what's happening on your farm today</span>
+            </header>
+
+            <!-- Alert Banner -->
+            <div class="alert-banner">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <h3 data-i18n="dashboard.alertTitle">Heavy rain expected today</h3>
+                    <p data-i18n="dashboard.alertMessage">Rain of 40-50mm expected between 2 PM to 6 PM. Check if your drainage is clear to protect crops from waterlogging.</p>
+                    <a href="/weather" class="alert-btn" data-i18n="dashboard.seeWhatToDo">See what to do →</a>
+                </div>
+            </div>
+
+            <!-- Farm Snapshot -->
+            <h2 class="section-title" data-i18n="dashboard.farmSnapshot">Farm Snapshot</h2>
+            <section class="snapshot-grid">
+                <!-- Wheat -->
+                <div class="snapshot-card">
+                    <div class="snapshot-header">
+                        <h3 data-i18n="crops.wheat">Wheat</h3>
+                        <span class="status-tag status-attention"><span data-i18n="dashboard.attentionNeeded">⚠️ Attention needed</span></span>
+                    </div>
+                    <div class="snapshot-body">
+                        <p data-i18n="dashboard.pestRiskDetected">Pest risk detected today</p>
+                    </div>
+                    <a href="/pest-detection" class="check-btn" data-i18n="dashboard.checkNow">Check now →</a>
+                </div>
+
+                <!-- Rice -->
+                <div class="snapshot-card">
+                    <div class="snapshot-header">
+                        <h3 data-i18n="crops.rice">Rice</h3>
+                        <span class="status-tag status-good"><span data-i18n="dashboard.good">✅ Good</span></span>
+                    </div>
+                    <div class="snapshot-body">
+                        <p data-i18n="dashboard.waterLevelGood">Water level is good</p>
+                    </div>
+                    <a href="/weather" class="check-btn" data-i18n="dashboard.checkNow">Check now →</a>
+                </div>
+
+                <!-- Sugarcane -->
+                <div class="snapshot-card">
+                    <div class="snapshot-header">
+                        <h3 data-i18n="crops.sugarcane">Sugarcane</h3>
+                        <span class="status-tag status-good"><span data-i18n="dashboard.good">✅ Good</span></span>
+                    </div>
+                    <div class="snapshot-body">
+                        <p data-i18n="dashboard.growthOnTrack">Growth on track</p>
+                    </div>
+                    <a href="/crop-advisory" class="check-btn" data-i18n="dashboard.checkNow">Check now →</a>
+                </div>
+            </section>
+
+            <!-- What you can do today -->
+            <h2 class="section-title" data-i18n="dashboard.whatCanYouDo">What you can do today</h2>
+            <section class="action-grid">
+                <a href="/pest-detection" class="action-card pest">
+                    <div class="action-icon">🪲</div>
+                    <div class="action-details">
+                        <h3 data-i18n="navigation.pestDetection">Pest Detection</h3>
+                        <span class="badge-active" data-i18n="dashboard.active">Active </span>
+                    </div>
+                </a>
+                <a href="/crop-advisory" class="action-card crop">
+                    <div class="action-icon">🌾</div>
+                    <div class="action-details">
+                        <h3 data-i18n="navigation.cropAdvisory">Crop Advisory</h3>
+                        <span class="badge-active" data-i18n="dashboard.active">Active </span>
+                    </div>
+                </a>
+                <a href="/weather" class="action-card weather">
+                    <div class="action-icon">🌦</div>
+                    <div class="action-details">
+                        <h3 data-i18n="navigation.weather">Weather</h3>
+                        <span class="badge-active" data-i18n="dashboard.active">Active </span>
+                    </div>
+                </a>
+                <a href="/market-prices" class="action-card prices">
+                    <div class="action-icon">📈</div>
+                    <div class="action-details">
+                        <h3 data-i18n="navigation.marketPrices">Market Prices</h3>
+                        <span class="badge-active" data-i18n="dashboard.active">Active </span>
+                    </div>
+                </a>
+                <a href="/soil-health" class="action-card soil">
+                    <div class="action-icon">🧪</div>
+                    <div class="action-details">
+                        <h3 data-i18n="navigation.soilHealth">Soil Health</h3>
+                        <span class="badge-active" data-i18n="dashboard.active">Active </span>
+                    </div>
+                </a>
+                <a href="/voice-assistance" class="action-card voice">
+                    <div class="action-icon">🎙</div>
+                    <div class="action-details">
+                        <h3 data-i18n="navigation.voiceAssistance">Voice assistant</h3>
+                        <span class="badge-active" data-i18n="dashboard.active">Active </span>
+                    </div>
+                </a>
+                <a href="/faq" class="action-card faq">
+                    <div class="action-icon">❓</div>
+                    <div class="action-details">
+                        <h3 data-i18n="navigation.faq">FAQ & Help</h3>
+                        <span class="badge-active" data-i18n="dashboard.active">Active </span>
+                    </div>
+                </a>
+            </section>
+
+            <!-- Quick Info -->
+            <h2 class="section-title" data-i18n="dashboard.quickInfo">Quick Info</h2>
+            <section class="quick-info-grid">
+                <a href="/weather" class="info-card">
+                    <div class="info-left">
+                        <h4 data-i18n="dashboard.todaysWeather">☀️ Today's Weather</h4>
+                        <div class="info-val">28°C</div>
+                        <p class="info-desc" data-i18n="dashboard.weatherDesc">Cloudy with rain expected</p>
+                    </div>
+                    <div class="info-arrow">→</div>
+                </a>
+                <a href="/market-prices" class="info-card">
+                    <div class="info-left">
+                        <h4 data-i18n="dashboard.wheatPrice">₹ Wheat Price (Nearby Mandi)</h4>
+                        <div class="info-val">₹2,150<span data-i18n="marketPrices.perQuintal">/quintal</span></div>
+                        <p class="info-desc" data-i18n="dashboard.priceUpdated">Updated 2 hours ago</p>
+                    </div>
+                    <div class="info-arrow">→</div>
+                </a>
+            </section>
+        </main>
+    </div>
+
+    <!-- Voice FAB -->
+    <a href="/voice-assistance" class="voice-fab" style="text-decoration: none;">
+        <span>🎙</span>
+        <label data-i18n="navigation.voiceAssistance">Talk to Krishi</label>
+    </a>
+
+    <!-- I18n Engine and Language Switcher -->
+    <script src="{{ url_for('static', filename='js/i18n-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/language-switcher.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    
+    <script>
+        // Helper to translate safely
+        const t = (key, defaultText) => {
+            if (window.KrishiI18n && window.KrishiI18n.t) {
+                return window.KrishiI18n.t(key);
+            }
+            return defaultText;
+        };
+
+        // Listen for language changes
+        document.addEventListener('languageChanged', function(e) {
+            console.log('Dashboard: Language changed to', e.detail.language);
+        });
+    </script>
+</body>
+</html>

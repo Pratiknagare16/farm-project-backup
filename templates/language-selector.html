@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Language - Krishi Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/language-selector.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="language-selector-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo-wrapper">
+                <img src="/static/assets/Logo.png" alt="Krishi Officer" class="logo-image">
+            </div>
+            <h1 class="app-title">Krishi Officer</h1>
+            <p class="app-subtitle">Smart Agriculture Support</p>
+        </div>
+
+        <!-- Language Selection Section -->
+        <div class="language-selection-section">
+            <h2 class="language-title">Select Your Language</h2>
+            <p class="language-description">Choose your preferred language to get started</p>
+
+            <div class="languages-grid">
+                <!-- English -->
+                <div class="language-card" data-language="en" data-language-name="English">
+                    <div class="language-card-inner">
+                        <svg class="language-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        <span class="language-label">English</span>
+                    </div>
+                </div>
+
+                <!-- Hindi -->
+                <div class="language-card" data-language="hi" data-language-name="हिंदी">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🇮🇳</span>
+                        <span class="language-label">हिंदी</span>
+                    </div>
+                </div>
+
+                <!-- Bengali -->
+                <div class="language-card" data-language="bn" data-language-name="বাংলা">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">বাংলা</span>
+                    </div>
+                </div>
+
+                <!-- Telugu -->
+                <div class="language-card" data-language="te" data-language-name="తెలుగు">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌱</span>
+                        <span class="language-label">తెలుగు</span>
+                    </div>
+                </div>
+
+                <!-- Tamil -->
+                <div class="language-card" data-language="ta" data-language-name="தமிழ்">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">தமிழ்</span>
+                    </div>
+                </div>
+
+                <!-- Marathi -->
+                <div class="language-card" data-language="mr" data-language-name="मराठी">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🇮🇳</span>
+                        <span class="language-label">मराठी</span>
+                    </div>
+                </div>
+
+                <!-- Urdu (RTL) -->
+                <div class="language-card" data-language="ur" data-language-name="اردو">
+                    <div class="language-card-inner">
+                        <span class="language-flag">📱</span>
+                        <span class="language-label">اردو</span>
+                    </div>
+                </div>
+
+                <!-- Gujarati -->
+                <div class="language-card" data-language="gu" data-language-name="ગુજરાતી">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">ગુજરાતી</span>
+                    </div>
+                </div>
+
+                <!-- Kannada -->
+                <div class="language-card" data-language="kn" data-language-name="ಕನ್ನಡ">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌿</span>
+                        <span class="language-label">ಕನ್ನಡ</span>
+                    </div>
+                </div>
+
+                <!-- Malayalam -->
+                <div class="language-card" data-language="ml" data-language-name="മലയാളം">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🍃</span>
+                        <span class="language-label">മലയാളം</span>
+                    </div>
+                </div>
+
+                <!-- Odia -->
+                <div class="language-card" data-language="od" data-language-name="ଓଡ଼ିଆ">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">ଓଡ଼ିଆ</span>
+                    </div>
+                </div>
+
+                <!-- Punjabi -->
+                <div class="language-card" data-language="pa" data-language-name="ਪੰਜਾਬੀ">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">ਪੰਜਾਬੀ</span>
+                    </div>
+                </div>
+
+                <!-- Assamese -->
+                <div class="language-card" data-language="as" data-language-name="অসমীয়া">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">অসমীয়া</span>
+                    </div>
+                </div>
+
+                <!-- Maithili -->
+                <div class="language-card" data-language="mai" data-language-name="मैथिली">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">मैथिली</span>
+                    </div>
+                </div>
+
+                <!-- Nepali -->
+                <div class="language-card" data-language="ne" data-language-name="नेपाली">
+                    <div class="language-card-inner">
+                        <span class="language-flag">⛰️</span>
+                        <span class="language-label">नेपाली</span>
+                    </div>
+                </div>
+
+                <!-- Konkani -->
+                <div class="language-card" data-language="kok" data-language-name="कोंकणी">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">कोंकणी</span>
+                    </div>
+                </div>
+
+                <!-- Sindhi -->
+                <div class="language-card" data-language="sd" data-language-name="سنڌي">
+                    <div class="language-card-inner">
+                        <span class="language-flag">📱</span>
+                        <span class="language-label">سنڌي</span>
+                    </div>
+                </div>
+
+                <!-- Dogri -->
+                <div class="language-card" data-language="doi" data-language-name="डोगरी">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🏔️</span>
+                        <span class="language-label">डोगरी</span>
+                    </div>
+                </div>
+
+                <!-- Manipuri -->
+                <div class="language-card" data-language="mni" data-language-name="মণিপুরী">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">মণিপুরী</span>
+                    </div>
+                </div>
+
+                <!-- Bodo -->
+                <div class="language-card" data-language="brx" data-language-name="बोडो">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">बोडो</span>
+                    </div>
+                </div>
+
+                <!-- Santhali -->
+                <div class="language-card" data-language="sat" data-language-name="संताली">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🌾</span>
+                        <span class="language-label">संताली</span>
+                    </div>
+                </div>
+
+                <!-- Sanskrit -->
+                <div class="language-card" data-language="sa" data-language-name="संस्कृत">
+                    <div class="language-card-inner">
+                        <span class="language-flag">🕉️</span>
+                        <span class="language-label">संस्कृत</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue Button -->
+            <button class="continue-button" id="continueBtn" disabled>
+                <span class="button-text">Continue</span>
+                <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+
+            <!-- Privacy Notice -->
+            <p class="privacy-notice">Your language preference will be saved locally on your device</p>
+        </div>
+
+        <!-- Floating Background Elements -->
+        <div class="floating-bg">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/language-selector.js') }}"></script>
+</body>
+</html>

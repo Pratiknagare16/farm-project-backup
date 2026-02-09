@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pest & Disease Detection - Krishi Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pest_detection.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/i18n-styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/Logo.png') }}" type="image/x-icon">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <button class="toggle-sidebar-btn" id="sidebarToggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="logo-small">
+                    <img src="/static/assets/Logo.png" alt="Krishi Officer Logo">
+                    <span data-i18n="common.appName">Krishi Officer</span>
+                </div>
+            </div>
+            <nav class="nav"><a href="#Language" data-i18n="header.language">Language</a></nav>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="/" class="nav-item"><span class="nav-icon">📊</span> <span
+                        class="nav-text" data-i18n="navigation.dashboard">Dashboard</span></a></li>
+            <li><a href="/crop-advisory" class="nav-item"><span class="nav-icon">🌾</span> <span
+                        class="nav-text" data-i18n="navigation.cropAdvisory">Crop Advisory</span></a></li>
+            <li><a href="/soil-health" class="nav-item"><span class="nav-icon">🧪</span> <span
+                        class="nav-text" data-i18n="navigation.soilHealth">Soil Health</span></a></li>
+            <li><a href="/pest-detection" class="nav-item active"><span class="nav-icon">🪲</span> <span
+                        class="nav-text" data-i18n="navigation.pestDetection">Pest Detection</span></a></li>
+            <li><a href="/weather" class="nav-item"><span class="nav-icon">🌦</span> <span
+                        class="nav-text" data-i18n="navigation.weather">Weather</span></a></li>
+            <li><a href="/market-prices" class="nav-item"><span class="nav-icon">📈</span> <span
+                        class="nav-text" data-i18n="navigation.marketPrices">Market Prices</span></a></li>
+            <li><a href="/voice-assistance" class="nav-item"><span class="nav-icon">🎙</span> <span
+                        class="nav-text" data-i18n="navigation.voiceAssistance">Voice Assistance</span></a></li>
+            <li><a href="/faq" class="nav-item"><span class="nav-icon">❓</span> <span
+                        class="nav-text" data-i18n="navigation.faq">FAQ</span></a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="main-content">
+            <header class="page-header">
+                <h1 data-i18n="pestDetection.pageTitle">🪲 Pest & Disease Detection</h1>
+                <p class="subtitle" data-i18n="pestDetection.subtitle">Describe the issue and attach a photo for AI analysis</p>
+            </header>
+
+            <div class="chat-container">
+                <div class="ai-response-area">
+                    <div class="panel-card" id="resultsPanel">
+                        <div class="results-placeholder" id="resultsPlaceholder">
+                            <div class="placeholder-icon">🌱</div>
+                            <p data-i18n="pestDetection.resultsPlaceholder">Your AI diagnosis will appear here after you send a query.</p>
+                        </div>
+                        <div class="results-content" id="resultsContent" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <div class="input-container">
+                        <div class="image-preview-bubble" id="imagePreview" style="display: none;">
+                            <img id="previewImg" src="" alt="Preview">
+                            <button class="remove-btn" id="removeImage">✕</button>
+                        </div>
+
+                        <div class="input-bar">
+                            <input type="file" id="imageInput" accept="image/*" hidden>
+                            <button class="plus-btn" id="plusBtn" type="button" title="Add Image">+</button>
+
+                            <textarea id="textInput" class="chat-textarea"
+                                data-i18n="pestDetection.placeholderText" data-i18n-type="placeholder"
+                                placeholder="Describe the symptoms (e.g., yellow spots on leaves)..."
+                                rows="1"></textarea>
+
+                            <button class="send-btn" id="diagnoseBtn">
+                                <span>➤</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/i18n-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/language-switcher.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pest_detection.js') }}"></script>
+</body>
+
+</html>

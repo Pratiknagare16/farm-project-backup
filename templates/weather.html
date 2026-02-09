@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="weather.title">Weather - Krishi Officer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/i18n-styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/Logo.png') }}" type="image/x-icon">
+    <style>
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .weather-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 28px;
+            border: var(--border);
+            text-align: center;
+        }
+
+        .weather-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .temp-display {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 12px 0;
+        }
+
+        .weather-label {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: var(--border);
+        }
+
+        .detail-item {
+            text-align: left;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .forecast-section {
+            margin-top: 32px;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .forecast-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .forecast-day {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .forecast-icon {
+            font-size: 28px;
+            margin: 8px 0;
+        }
+
+        .forecast-temp {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .forecast-desc {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 6px;
+        }
+
+        .advisory-box {
+            background: #fff4e5;
+            border-left: 4px solid #f08c00;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 24px;
+        }
+
+        .advisory-title {
+            font-weight: 700;
+            color: #663c00;
+            margin-bottom: 8px;
+        }
+
+        .advisory-text {
+            color: #663c00;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <button class="toggle-sidebar-btn" id="sidebarToggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="logo-small">
+                    <img src="/static/assets/Logo.png" alt="Krishi Officer Logo">
+                    <span data-i18n="common.appName">Krishi Officer</span>
+                </div>
+            </div>
+            <nav class="nav"></nav>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="/" class="nav-item"><span class="nav-icon">📊</span> <span class="nav-text" data-i18n="navigation.dashboard">Dashboard</span></a></li>
+            <li><a href="/crop-advisory" class="nav-item"><span class="nav-icon">🌾</span> <span class="nav-text" data-i18n="navigation.cropAdvisory">Crop Advisory</span></a></li>
+            <li><a href="/soil-health" class="nav-item"><span class="nav-icon">🧪</span> <span class="nav-text" data-i18n="navigation.soilHealth">Soil Health</span></a></li>
+            <li><a href="/pest-detection" class="nav-item"><span class="nav-icon">🪲</span> <span class="nav-text" data-i18n="navigation.pestDetection">Pest Detection</span></a></li>
+            <li><a href="/weather" class="nav-item active"><span class="nav-icon">🌦</span> <span class="nav-text" data-i18n="navigation.weather">Weather</span></a></li>
+            <li><a href="/market-prices" class="nav-item"><span class="nav-icon">📈</span> <span class="nav-text" data-i18n="navigation.marketPrices">Market Prices</span></a></li>
+            <li><a href="/voice-assistance" class="nav-item"><span class="nav-icon">🎙</span> <span class="nav-text" data-i18n="navigation.voiceAssistance">Voice Assistance</span></a></li>
+            <li><a href="/faq" class="nav-item"><span class="nav-icon">❓</span> <span class="nav-text" data-i18n="navigation.faq">FAQ</span></a></li>
+        </ul>
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=Guest+Farmer&background=random" alt="User" class="avatar">
+            <div class="user-info">
+                <p data-i18n="dashboard.guest">Guest Farmer</p>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="main-content">
+            <h1 style="margin-bottom: 24px;" data-i18n="weather.title">🌦 Weather & Climate</h1>
+
+            <div class="weather-grid">
+                <!-- Today's Weather -->
+                <div class="weather-card">
+                    <div class="weather-icon">⛅</div>
+                    <h3 data-i18n="weather.today">Today</h3>
+                    <div class="temp-display">28°C</div>
+                    <p class="weather-label" data-i18n="weather.partlyCloudy">Partly Cloudy</p>
+
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.humidity">Humidity</div>
+                            <div class="detail-value">72%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.windSpeed">Wind Speed</div>
+                            <div class="detail-value">12 <span data-i18n="weather.kmh">km/h</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.pressure">Pressure</div>
+                            <div class="detail-value">1013 <span data-i18n="weather.mb">mb</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.uvIndex">UV Index</div>
+                            <div class="detail-value">6</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tomorrow's Weather -->
+                <div class="weather-card">
+                    <div class="weather-icon">🌧️</div>
+                    <h3 data-i18n="weather.tomorrow">Tomorrow</h3>
+                    <div class="temp-display">24°C</div>
+                    <p class="weather-label" data-i18n="weather.rain">Rain</p>
+
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.humidity">Humidity</div>
+                            <div class="detail-value">85%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.windSpeed">Wind Speed</div>
+                            <div class="detail-value">18 <span data-i18n="weather.kmh">km/h</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.pressure">Pressure</div>
+                            <div class="detail-value">1008 <span data-i18n="weather.mb">mb</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label" data-i18n="weather.uvIndex">UV Index</div>
+                            <div class="detail-value">3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Farm Advisory -->
+            <div class="advisory-box">
+                <div class="advisory-title" data-i18n="weather.advisoryTitle">Farm Advisory</div>
+                <div class="advisory-text" data-i18n="weather.advisoryText">
+                    Heavy rainfall is expected in the next 48 hours. Ensure proper drainage in your fields to prevent waterlogging. Avoid applying fertilizers or pesticides until the rain stops.
+                </div>
+            </div>
+
+            <!-- 7-Day Forecast -->
+            <div class="forecast-section">
+                <h2 class="section-title" data-i18n="weather.next7Days">Next 7 Days</h2>
+                <div class="forecast-grid">
+                    <div class="forecast-card">
+                        <div class="forecast-day" data-i18n="common.days.mon">Mon</div>
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-temp">30°C</div>
+                        <div class="forecast-desc" data-i18n="weather.sunny">Sunny</div>
+                    </div>
+                    <div class="forecast-card">
+                        <div class="forecast-day" data-i18n="common.days.tue">Tue</div>
+                        <div class="forecast-icon">⛅</div>
+                        <div class="forecast-temp">29°C</div>
+                        <div class="forecast-desc" data-i18n="weather.partlyCloudy">Partly Cloudy</div>
+                    </div>
+                    <div class="forecast-card">
+                        <div class="forecast-day" data-i18n="common.days.wed">Wed</div>
+                        <div class="forecast-icon">🌧️</div>
+                        <div class="forecast-temp">25°C</div>
+                        <div class="forecast-desc" data-i18n="weather.rain">Rain</div>
+                    </div>
+                    <div class="forecast-card">
+                        <div class="forecast-day" data-i18n="common.days.thu">Thu</div>
+                        <div class="forecast-icon">🌧️</div>
+                        <div class="forecast-temp">24°C</div>
+                        <div class="forecast-desc" data-i18n="weather.rain">Rain</div>
+                    </div>
+                    <div class="forecast-card">
+                        <div class="forecast-day" data-i18n="common.days.fri">Fri</div>
+                        <div class="forecast-icon">☁️</div>
+                        <div class="forecast-temp">26°C</div>
+                        <div class="forecast-desc" data-i18n="weather.cloudy">Cloudy</div>
+                    </div>
+                    <div class="forecast-card">
+                        <div class="forecast-day" data-i18n="common.days.sat">Sat</div>
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-temp">29°C</div>
+                        <div class="forecast-desc" data-i18n="weather.sunny">Sunny</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- I18n Engine and Language Switcher -->
+    <script src="{{ url_for('static', filename='js/i18n-engine.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/language-switcher.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    
+    <script>
+        // Helper to translate safely
+        const t = (key, defaultText) => {
+            if (window.KrishiI18n && window.KrishiI18n.t) {
+                return window.KrishiI18n.t(key);
+            }
+            return defaultText;
+        };
+
+        // Listen for language changes to update any dynamic content if needed
+        document.addEventListener('languageChanged', function(e) {
+            console.log('Weather page: Language changed to', e.detail.language);
+            // Re-apply translations if there are any dynamic elements not covered by data-i18n
+        });
+    </script>
+</body>
+
+</html>
